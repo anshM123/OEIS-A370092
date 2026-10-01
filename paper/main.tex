@@ -1,0 +1,270 @@
+\documentclass[11pt]{amsart}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\lean}[1]{\texttt{#1}}
+\setlength{\emergencystretch}{3em}
+
+\begin{document}
+
+\title[Bala's conjecture for A370092]{The residues of OEIS A370092 modulo $k$ have period dividing $\varphi(k)$: a proof of a conjecture of Bala}
+
+\author{Ansh Mishra}
+\author{Aryan Senthilkumar}
+
+\date{October 2026}
+
+\begin{abstract}
+The sequence A370092 is defined by $a(0)=1$ and $a(n)=(-1)^n+\frac12\sum_{j=1}^{n}\bigl(1-(-1)^j-(-2)^j\bigr)\binom nj a(n-j)$.
+Its exponential generating function is $2e^x/(1+e^x+e^{2x}-e^{3x})$.
+Peter Bala conjectured that for every $k>2$ the sequence $a(n)\bmod k$ is eventually periodic with period dividing $\varphi(k)$.
+We prove that $a(n+\varphi(k))\equiv a(n)\pmod k$ for all $k\ge3$ and $n\ge k$.
+Known results for e.g.f.s of the form $G(e^x-1)$ with integral $G$ do not apply, because here $G$ has denominators $2^{\lfloor k/3\rfloor}$.
+The key step is a $2$-section of the generating function in $e^x$, which produces an integer identity with an explicit factor $2^n$.
+We also show that the period modulo $2^e$ is exactly $2^{e-1}=\varphi(2^e)$, and that the period modulo $2$ is $2$.
+The proof is formalized in Lean~4 with Mathlib, against the statement \lean{OeisA370092.bounds} in Google DeepMind's Formal Conjectures repository.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Let $a(n)$ be the sequence A370092 of the OEIS \cite{OEIS}: $a(0)=1$ and, for $n\ge1$,
+\begin{equation}\label{eq:rec}
+a(n)=(-1)^n+\frac12\sum_{j=1}^{n}\bigl(1-(-1)^j-(-2)^j\bigr)\binom nj\,a(n-j).
+\end{equation}
+It begins $1,1,3,16,105,\dots$.
+In 2024 Bala conjectured in the OEIS entry that for every integer $k>2$ the sequence $a(n)\bmod k$ is eventually periodic, with period dividing Euler's function $\varphi(k)$.
+The conjecture is stated in Google DeepMind's Formal Conjectures repository \cite{FC} as \lean{OeisA370092.bounds}.
+
+\begin{theorem}\label{thm:main}
+\begin{enumerate}
+\item[(i)] $a(n)\in\Z$ for all $n$.
+\item[(ii)] For every $k\ge3$ and every $n\ge k$, $a(n+\varphi(k))\equiv a(n)\pmod k$.
+\item[(iii)] For $e\ge2$ the eventual period of $a\bmod 2^e$ is exactly $2^{e-1}$, and the eventual period of $a\bmod2$ is $2$.
+\end{enumerate}
+\end{theorem}
+
+Part (iii) shows that the bound $\varphi(k)$ is attained at powers of $2$, and that the conjecture fails for $k=2$, which is why $k>2$ is required.
+
+Bala also stated a general conjecture for sequences whose e.g.f.\ is $G(e^x-1)$ with $G\in\Z[[z]]$ \cite[A000670]{OEIS}.
+That case is now proved (see \cite[\S2]{Kallat} and the Lean development \cite{Omega}); the classical example is the Fubini numbers \cite{Barsky,Gross}.
+For A370092, the e.g.f.\ is $G(e^x-1)$ with $G(z)=(1+z)/(1-z^2-z^3/2)$.
+This $G$ is not integral: its coefficients have $2$-adic valuation about $-k/3$.
+The integral argument would give the period $2^{e-2}$ modulo $2^e$, which is false here.
+The odd primes are handled by the standard truncation argument.
+At the prime $2$ we use a $2$-section of the generating function (Lemma~\ref{lem:section}).
+
+\section{The generating function and its $2$-section}
+
+For a sequence $f$ write $\mathfrak Ef=\sum_nf(n)x^n/n!$, and $E_c=e^{cx}$.
+Put $Q(u)=1+u+u^2-u^3$ and $D(v)=1+v+3v^2-v^3$.
+
+\begin{lemma}\label{lem:egf}
+$\mathfrak Ea=2e^x/Q(e^x)$.
+\end{lemma}
+
+\begin{proof}
+Put $c_j=1-(-1)^j-(-2)^j$, $\varepsilon_0=2$ and $\varepsilon_j=-c_j$ for $j\ge1$.
+Then \eqref{eq:rec} together with $a(0)=1$ says $\sum_{j=0}^n\binom nj\varepsilon_ja(n-j)=2(-1)^n$ for all $n$, that is, $(1+E_{-1}+E_{-2}-E_1)\,\mathfrak Ea=2E_{-1}$.
+Multiply by $E_2$.
+\end{proof}
+
+\begin{lemma}[$2$-section]\label{lem:section}
+Let $M_1(y)=2(1+e^y)/D(e^y)$ and $M_0(y)=2(e^{2y}-e^y)/D(e^y)$, and let $\mu_i(m)=m!\,[y^m]M_i(y)$.
+Then $\mathfrak Ea=M_0(2x)+e^xM_1(2x)$, and hence
+\begin{equation}\label{eq:section}
+a(n)=2^n\mu_0(n)+\sum_{m=0}^n\binom nm2^m\mu_1(m).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Write $Q(u)=(1+u^2)+(u-u^3)$.
+Then $Q(u)Q(-u)=(1+u^2)^2-(u-u^3)^2=D(u^2)$, and $2uQ(-u)=2(u^4-u^2)+2u(1+u^2)$.
+With $u=e^x$, so that $u^2=e^{2x}$,
+\[
+\frac{2u}{Q(u)}=\frac{2uQ(-u)}{D(u^2)}=\frac{2(u^4-u^2)}{D(u^2)}+u\,\frac{2(1+u^2)}{D(u^2)}=M_0(2x)+e^xM_1(2x).
+\]
+All denominators have nonzero constant term ($Q(\pm1)=2$, $D(1)=4$), so this is an identity in $\Q[[x]]$.
+The coefficient formula follows by the binomial convolution of $e^x$ with $M_1(2x)$.
+\end{proof}
+
+\section{Stirling expansion and integrality}
+
+Let $T(m,k)=k!\,S(m,k)=\sum_{i=0}^k(-1)^{k-i}\binom ki i^m$, where $S$ denotes the Stirling numbers of the second kind.
+Then $T(m,k)=m!\,[y^m](e^y-1)^k$.
+In $w=e^y-1$ we have $D(1+w)=4+4w-w^3$, $2(2+w)=2(1+e^y)$ and $2(w+w^2)=2(e^{2y}-e^y)$.
+So $M_1=(1+\tfrac w2)\Theta(w)$ and $M_0=\tfrac{w+w^2}{2}\Theta(w)$, where
+\[
+\Theta(w)=\frac{4}{4+4w-w^3}=\sum_k\theta_kw^k,\qquad \theta_0=1,\quad \theta_k=-\theta_{k-1}+\tfrac14\theta_{k-3}.
+\]
+With $\lambda_{1,k}=\theta_k+\tfrac12\theta_{k-1}$ and $\lambda_{0,k}=\tfrac12(\theta_{k-1}+\theta_{k-2})$ we obtain
+\begin{equation}\label{eq:stirling}
+\mu_i(m)=\sum_{k=0}^m\lambda_{i,k}\,T(m,k).
+\end{equation}
+
+\begin{lemma}\label{lem:halfint}
+The numbers $A_i(m):=2\mu_i(m)$ are integers.
+Moreover $A_1(0),\dots,A_1(4)=2,-1,1,2,1$.
+\end{lemma}
+
+\begin{proof}
+By induction, $\theta_k\in\Z[\frac12]$ and $v_2(\theta_k)\ge-2\lfloor k/3\rfloor$.
+Legendre's formula gives $v_2(k!)\ge2\lfloor k/3\rfloor-1$ for all $k$, and $v_2(k!)\ge2\lfloor (k-1)/3\rfloor$ for $k\ge1$.
+For small $k$ this is checked directly; for large $k$ it follows from $v_2(k!)\ge\lfloor k/2\rfloor+\lfloor k/4\rfloor$.
+Hence $2\,k!\,\lambda_{i,k}$ lies in $\Z[\frac12]$ and has nonnegative $2$-adic valuation, so it is an integer.
+Now use \eqref{eq:stirling} and $T(m,k)=k!\,S(m,k)$.
+The values follow from $\theta_0,\dots,\theta_4=1,-1,1,-\frac34,\frac12$.
+\end{proof}
+
+Multiplying \eqref{eq:section} by $2$ gives the integer identity
+\begin{equation}\label{eq:int}
+2a(n)=2^nA_0(n)+F(n),\qquad F(n)=\sum_{m=0}^n\binom nm2^mA_1(m).
+\end{equation}
+
+\begin{proposition}\label{prop:parity}
+$a(n)\in\Z$ for all $n$, and $a(n)\equiv n+1\pmod 2$ for $n\ge2$.
+\end{proposition}
+
+\begin{proof}
+Modulo $4$, the terms of $F(n)$ with $m\ge2$ vanish, so $F(n)\equiv A_1(0)+2nA_1(1)=2-2n$.
+For $n\ge1$ the term $2^nA_0(n)$ is even, so $2a(n)$ is even.
+For $n\ge2$ we get $2a(n)\equiv2-2n\pmod4$.
+\end{proof}
+
+\section{The prime $2$}
+
+\begin{theorem}\label{thm:two}
+Let $e\ge2$ and $P=2^{e-1}$.
+Then $a(n+P)\equiv a(n)\pmod{2^e}$ for all $n\ge e+1$.
+\end{theorem}
+
+\begin{proof}
+For $n\ge e+1$ the terms $2^nA_0(n)$ and $2^{n+P}A_0(n+P)$ in \eqref{eq:int} are divisible by $2^{e+1}$.
+So it suffices to show $F(n+P)\equiv F(n)\pmod{2^{e+1}}$.
+
+By Vandermonde's identity $\binom{n+P}m=\sum_{r+j=m}\binom Pr\binom nj$.
+Hence
+\[
+F(n+P)-F(n)=\sum_{r=1}^{P}\binom Pr2^rF_r(n),\qquad F_r(n)=\sum_{j=0}^n\binom nj2^jA_1(j+r).
+\]
+From $r\binom Pr=P\binom{P-1}{r-1}$ we get $v_2\bigl(\binom Pr2^r\bigr)\ge e-1+r-v_2(r)$.
+This is at least $e+1$ for $r\ge3$.
+The two remaining terms are $2P=2^e$ and $4\binom P2=2^e(P-1)$.
+Hence
+\[
+F(n+P)-F(n)\equiv2^e\bigl(F_1(n)+(P-1)F_2(n)\bigr)\pmod{2^{e+1}}.
+\]
+Since $F_r(n)\equiv A_1(r)\pmod 2$ and $P-1$ is odd, the bracket is congruent modulo $2$ to $A_1(1)+A_1(2)=-1+1=0$.
+\end{proof}
+
+\begin{proposition}\label{prop:exact}
+For $e\ge3$ and $n\ge e+1$: $a(n+2^{e-2})-a(n)\equiv2^{e-1}n\pmod{2^e}$.
+\end{proposition}
+
+\begin{proof}
+Let $P'=2^{e-2}$.
+As above, $2(a(n+P')-a(n))\equiv\sum_{r\ge1}\binom{P'}r2^rF_r(n)\pmod{2^{e+1}}$, and $v_2(\binom{P'}r2^r)\ge e-2+r-v_2(r)$.
+So only $r\in\{1,2,4\}$ contribute:
+\begin{itemize}
+\item $r=1$ gives $2^{e-1}$;
+\item $r=2$ gives $2^{e-1}(P'-1)$;
+\item $r=4$ gives $2^e u$, where $u$ is odd for $e\ge4$ and $u=0$ for $e=3$.
+\end{itemize}
+Modulo $4$, $F_r(n)\equiv A_1(r)+2nA_1(r+1)$, so $F_1\equiv2n-1$ and $F_2\equiv1$; also $F_4\equiv1\pmod2$.
+The bracket $F_1+(P'-1)F_2+2uF_4$ is therefore $\equiv2n\pmod4$, both for $e=3$ and for $e\ge4$.
+\end{proof}
+
+So for odd $n$ the shift by $2^{e-2}$ changes the residue modulo $2^e$, and the period is exactly $2^{e-1}$.
+Modulo $2$ the period is $2$ by Proposition~\ref{prop:parity}.
+
+\section{Odd primes and the general modulus}
+
+\begin{theorem}\label{thm:odd}
+Let $p$ be an odd prime and $e\ge1$.
+Then $a(n+\varphi(p^e))\equiv a(n)\pmod{p^e}$ for all $n\ge e$.
+\end{theorem}
+
+\begin{proof}
+For integers $\beta,\gamma$ put $\Delta_k(\beta,\gamma;n)=\sum_{i=0}^k(-1)^{k-i}\binom ki(\beta i+\gamma)^n$.
+Then $\Delta_k(\beta,\gamma;n)=\sum_m\binom nm\beta^m\gamma^{n-m}T(m,k)$, which is divisible by $k!$.
+By \eqref{eq:section} and \eqref{eq:stirling},
+\[
+2a(n)=\sum_{k\ge0}\bigl(2\lambda_{0,k}\Delta_k(2,0;n)+2\lambda_{1,k}\Delta_k(2,1;n)\bigr),
+\]
+with coefficients in $\Z[\frac12]$, which is contained in the $p$-integral rationals.
+The terms with $k\ge pe$ are divisible by $p^e$, since $p^e\mid k!$.
+What remains is a fixed $p$-integral linear combination of sequences $t^n$ with $t\in\Z$.
+Each of these satisfies $t^{n+\varphi(p^e)}\equiv t^n\pmod{p^e}$ for $n\ge e$: by Euler's theorem if $p\nmid t$, and because both sides are $\equiv0$ if $p\mid t$.
+As $p$ is odd, the factor $2$ cancels.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Part (i) is Proposition~\ref{prop:parity}, and part (iii) is Proposition~\ref{prop:exact} together with Proposition~\ref{prop:parity}.
+
+For (ii), write $k=2^{e_0}\prod p_i^{e_i}$.
+If a congruence holds with period $P_0$ and $P_0\mid P$, it holds with period $P$.
+\begin{itemize}
+\item For an odd prime power $p^e\,\|\,k$, Theorem~\ref{thm:odd} applies with $\varphi(p^e)\mid\varphi(k)$.
+\item If $e_0\ge2$, Theorem~\ref{thm:two} applies with $2^{e_0-1}=\varphi(2^{e_0})\mid\varphi(k)$, for $n\ge e_0+1$; note that $e_0+1\le k$.
+\item If $e_0=1$, then $k=2m$ with $m\ge3$ odd, and $\varphi(k)$ is even. Theorem~\ref{thm:two} with $e=2$ gives period $2$ modulo $4$, hence modulo $2$, for $n\ge3$.
+\end{itemize}
+The Chinese remainder theorem combines these congruences.
+\end{proof}
+
+\begin{remark}
+The only arithmetic inputs at the prime $2$ are that $A_0$ and $A_1$ are integer-valued and that $A_1(1)+A_1(2)$ is even.
+The single factor $\frac12$ in $\mu_1(1)=-\frac12$ is what makes the period modulo $2^e$ equal to $\varphi(2^e)$ rather than $2^{e-2}$.
+\end{remark}
+
+\section{Formalization and checks}
+
+The statement in \cite{FC} reads
+\[
+\lean{bounds}:\quad \forall k\in\mathbb N,\ 2<k\ \to\ \exists P\in\mathbb N,\ P\mid\varphi(k)\ \wedge\ \lean{eventually\_periodic}\,(\lean{a\_mod\_k}\ k)\ P .
+\]
+Here \lean{a} is defined by the recurrence \eqref{eq:rec} in $\Q$, and \lean{a\_mod\_k k n} is the numerator of $a(n)$ reduced modulo $k$.
+
+We have formalized Theorem~\ref{thm:main}(i),(ii) in Lean~4 with Mathlib.
+The formal proof avoids power series.
+It proves the closed formula \eqref{eq:int} from the recurrence by finite differences, and then follows Sections~3--5.
+The statement file is included unmodified.
+The solved theorem \lean{OeisA370092.bounds\_solved} has the type of \lean{OeisA370092.bounds}, which is checked by \lean{rfl}, and it uses the period $P=\varphi(k)$ from the index $k$.
+The proof depends only on the axioms \lean{propext}, \lean{Classical.choice} and \lean{Quot.sound}.
+
+Independently, every identity and congruence above was checked with exact integer arithmetic for $n\le600$.
+This includes Theorem~\ref{thm:main}(ii) for all $3\le k\le200$, Theorem~\ref{thm:two} for $e\le10$ and Proposition~\ref{prop:exact} for $e\le10$.
+
+\begin{thebibliography}{9}
+
+\bibitem{Barsky}
+D.~Barsky, \emph{Analyse $p$-adique et nombres de Bell}, S\'em.\ Lothar.\ Combin.\ B05b (1981).
+
+\bibitem{FC}
+Google DeepMind, \emph{Formal Conjectures}, \url{https://github.com/google-deepmind/formal-conjectures}; the statement is in \texttt{FormalConjectures/OEIS/370092.lean}, pull request 4946 (2026).
+
+\bibitem{Gross}
+O.~A.~Gross, \emph{Preferential arrangements}, Amer.\ Math.\ Monthly \textbf{69} (1962), 4--8.
+
+\bibitem{Kallat}
+A.~Kallat, \emph{A proof of Bala's congruence conjectures for A158690}, arXiv:2609.07238, 2026.
+
+\bibitem{OEIS}
+OEIS Foundation Inc., \emph{The On-Line Encyclopedia of Integer Sequences}, \url{https://oeis.org}, entries A370092 and A000670.
+
+\bibitem{Omega}
+The Omega Institute, \emph{trureturing}, \url{https://github.com/the-omega-institute/trureturing}, pull request 6811 (2026): Lean proof of Bala's conjecture for e.g.f.s $G(e^x-1)$ with integral $G$.
+
+\end{thebibliography}
+
+\end{document}

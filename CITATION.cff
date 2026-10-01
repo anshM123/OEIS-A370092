@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite the preprint below."
+title: "The residues of OEIS A370092 modulo k have period dividing phi(k): a proof of a conjecture of Bala"
+type: software
+authors:
+  - family-names: Mishra
+    given-names: Ansh
+  - family-names: Senthilkumar
+    given-names: Aryan
+version: "1.0"
+date-released: "2026-10-01"
+license: MIT
+repository-code: "https://github.com/anshM123/OEIS-A370092"
+keywords:
+  - "OEIS A370092"
+  - "periodicity modulo k"
+  - "2-adic analysis"
+  - "Formal Conjectures"
+  - "Lean 4"
+  - "formal verification"
+preferred-citation:
+  type: article
+  status: preprint
+  title: "The residues of OEIS A370092 modulo k have period dividing phi(k): a proof of a conjecture of Bala"
+  authors:
+    - family-names: Mishra
+      given-names: Ansh
+    - family-names: Senthilkumar
+      given-names: Aryan
+  year: 2026
+  month: 10
+  url: "https://github.com/anshM123/OEIS-A370092"

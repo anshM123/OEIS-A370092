@@ -1,0 +1,51 @@
+[1] a(0..600) from the Lean recurrence: all integers, first 21 agree with OEIS
+[2] e.g.f. identity (1+e^x+e^2x-e^3x) A(x) = 2e^x holds coefficientwise
+[3] a(n) = sum_k rho_k k! S(n,k); v2(rho_k) >= -floor(k/3) (slack min 0); rho_k k! integral
+[4a] mu_1 has e.g.f. 2(1+e^y)/D(e^y), mu_0 has e.g.f. 2(e^{2y}-e^y)/D(e^y)
+[4b] a(n) = 2^n mu0(n) + sum_m C(n,m) 2^m mu1(m)  for n <= 600
+[4c] min v2(mu1(m)) = -1, min v2(mu0(m)) = -1  (m <= 600); termwise bounds hold
+     mu1(0..6) = ['1', '-1/2', '1/2', '1', '1/2', '7', '91/2']
+     mu0(0..6) = ['0', '1/2', '1/2', '1/2', '7/2', '31/2', '121/2']
+[5] nu_0=1, nu'_0=0, nu_1=0, v2(nu'_1)=2; v2(nu_j),v2(nu'_j) >= 2+floor(log2 j) for 1<=j<=299
+[5b] sum_m C(n,m)2^m mu1(m) = sum_j C(floor(n/2),j) nu_j (n even) / nu'_j (n odd)
+[6] mod 2^e: a(n+2^(e-1)) == a(n) for n >= e+1 ; minimal start; is 2^(e-2) also a period?
+    e= 2: period 2^1 from n>=e+1: True; congruence holds exactly from n=3; period 2^0 on tail: False
+    e= 3: period 2^2 from n>=e+1: True; congruence holds exactly from n=4; period 2^1 on tail: False
+    e= 4: period 2^3 from n>=e+1: True; congruence holds exactly from n=5; period 2^2 on tail: False
+    e= 5: period 2^4 from n>=e+1: True; congruence holds exactly from n=6; period 2^3 on tail: False
+    e= 6: period 2^5 from n>=e+1: True; congruence holds exactly from n=7; period 2^4 on tail: False
+    e= 7: period 2^6 from n>=e+1: True; congruence holds exactly from n=7; period 2^5 on tail: False
+    e= 8: period 2^7 from n>=e+1: True; congruence holds exactly from n=9; period 2^6 on tail: False
+    e= 9: period 2^8 from n>=e+1: True; congruence holds exactly from n=10; period 2^7 on tail: False
+    e=10: period 2^9 from n>=e+1: True; congruence holds exactly from n=11; period 2^8 on tail: False
+    mod 2: a(n) == n+1 (mod 2) for all n >= 2 (period exactly 2, not 1)
+[7] p^e=3: a(n+phi)==a(n) for n>=e: True; exact start 1
+[7] p^e=9: a(n+phi)==a(n) for n>=e: True; exact start 2
+[7] p^e=27: a(n+phi)==a(n) for n>=e: True; exact start 2
+[7] p^e=5: a(n+phi)==a(n) for n>=e: True; exact start 1
+[7] p^e=25: a(n+phi)==a(n) for n>=e: True; exact start 1
+[7] p^e=125: a(n+phi)==a(n) for n>=e: True; exact start 2
+[7] p^e=7: a(n+phi)==a(n) for n>=e: True; exact start 1
+[7] p^e=49: a(n+phi)==a(n) for n>=e: True; exact start 2
+[7] p^e=343: a(n+phi)==a(n) for n>=e: True; exact start 3
+[7] p^e=11: a(n+phi)==a(n) for n>=e: True; exact start 1
+[7] p^e=121: a(n+phi)==a(n) for n>=e: True; exact start 2
+[7] p^e=13: a(n+phi)==a(n) for n>=e: True; exact start 1
+[7] p^e=169: a(n+phi)==a(n) for n>=e: True; exact start 2
+[8] k=3..200: a(n+phi(k)) == a(n) (mod k) for all n >= N(k) (n+phi(k)<= 600); failures: []
+    k=2^2: phi=2, holds from n=3: True
+    k=2^3: phi=4, holds from n=4: True
+    k=2^4: phi=8, holds from n=5: True
+    k=2^5: phi=16, holds from n=6: True
+    k=2^6: phi=32, holds from n=7: True
+    k=2^7: phi=64, holds from n=8: True
+    k=2^8: phi=128, holds from n=9: True
+    k=2: a(n+1)==a(n) mod 2 eventually? False
+    uniform start: a(n+phi(k)) == a(n) (mod k) for all n >= k, k=3..200: failures []
+[9] polynomial identities Q(u)Q(-u)=D(u^2), 2uQ(-u)=2(u^4-u^2)+2u(1+u^2), D(1+w)=4+4w-w^3: OK
+[10] A_i(m)=2mu_i(m) in Z (m<=N), A1(0..2)=2,-1,1, c_{i,k}=2k!lam_{i,k} in Z, 4^(k/3)theta_k in Z, Lemma-4 bounds, (Z1) identity: OK
+     A1(0..8) = [2, -1, 1, 2, 1, 14, 91, 377, 2521]  A0(0..8) = [0, 1, 1, 1, 7, 31, 121, 736, 5167]
+[11] F(n+2^(e-1)) == F(n) mod 2^(e+1) for all n (e=2..9); Vandermonde shift identity; v2(C(2^a,r)) = a - v2(r): OK
+[12] exact period: mod 2^e (e=3..10) the shift 2^(e-2) changes odd-index terms by 2^(e-1); mod 4 shift 1 fails: OK
+[13] odd p: 2a(n) == sum_{k<pe} sum_i (-1)^(k-i)C(k,i)[2lam0_k(2i)^n + 2lam1_k(2i+1)^n] (mod p^e): OK
+ALL CHECKS PASSED

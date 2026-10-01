@@ -1,0 +1,27 @@
+{
+  "title": "The residues of OEIS A370092 modulo k have period dividing phi(k): a proof of a conjecture of Bala",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "description": "The sequence A370092 is defined by a(0) = 1 and a(n) = (-1)^n + (1/2) sum_{j=1..n} (1 - (-1)^j - (-2)^j) C(n,j) a(n-j); its exponential generating function is 2e^x/(1 + e^x + e^{2x} - e^{3x}). Peter Bala conjectured that for every k > 2 the sequence a(n) mod k is eventually periodic with period dividing phi(k). We prove that a(n + phi(k)) = a(n) mod k for all k >= 3 and n >= k, and that the period modulo 2^e is exactly 2^(e-1). Known results for e.g.f.s G(e^x - 1) with integral G do not apply, since here G has denominators 2^{floor(k/3)}; the key step is a 2-section of the generating function in e^x. The proof is formalized in Lean 4 with Mathlib against the statement OeisA370092.bounds of Google DeepMind's Formal Conjectures repository. The repository contains the paper (LaTeX source and PDF), the Lean files, a check script, exact-arithmetic checks and logs.",
+  "creators": [
+    {
+      "name": "Mishra, Ansh"
+    },
+    {
+      "name": "Senthilkumar, Aryan"
+    }
+  ],
+  "license": "mit",
+  "access_right": "open",
+  "keywords": [
+    "OEIS A370092",
+    "periodicity modulo k",
+    "2-adic analysis",
+    "Stirling numbers",
+    "Formal Conjectures",
+    "Lean 4",
+    "formal verification"
+  ],
+  "version": "1.0",
+  "language": "eng"
+}

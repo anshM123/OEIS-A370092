@@ -1,0 +1,19 @@
+== formal-conjectures commit: ab0addc45f699bdd0b7cc58efa5140a72f101a9e
+== statement file git blob: 61345ec359f3205372fdfdb6ffa796b17a058daf  (pull request 4946: 61345ec3...)
+== 1. Statement.lean (unmodified pull-request file, repository options)
+== compiling CoreDefs.lean
+== compiling CoreClosed.lean
+== compiling CoreArith.lean
+== compiling CoreTwoAdic.lean
+== compiling CoreOdd.lean
+== compiling Core.lean
+== compiling Solution.lean
+== CheckAnswer.lean (definitions agree; type of bounds_solved = type of bounds; axioms)
+OeisA370092.bounds : ∀ (k : ℕ), 2 < k → ∃ P, P ∣ k.totient ∧ OeisA370092.eventually_periodic (OeisA370092.a_mod_k k) P
+OeisA370092.bounds_solved : ∀ (k : ℕ),
+  2 < k → ∃ P, P ∣ k.totient ∧ OeisA370092.eventually_periodic (OeisA370092.a_mod_k k) P
+'OeisA370092.bounds_solved' depends on axioms: [propext, Classical.choice, Quot.sound]
+== forbidden keywords (sorry/admit/native_decide/axiom) outside the statement file:
+none
+== done
+== exit 0, 246 s
